@@ -1,31 +1,25 @@
-import { useEffect, useState } from 'react'
 import './App.css'
+import { ICharacter, useFetch } from './services/useFetch'
 
-
-interface ICharacter {
-  id: number;
-  name: string;
-  species: string;
-  img: string;
-}
 
 function App() {
-  const [data, setData] = useState<null | ICharacter[]>([]);
 
-  useEffect(() => {
-    fetch('https://rickandmortyapi.com/api/character')
-      .then(resp => resp.json())
-      .then(data => setData(data.results));
-  }, [])
-
+  const { data, loading, error } = useFetch('https://rickandmortyapi.com/api/character');
   return (
     <div>
       <h1>Rick and Morty</h1>
       <div>
         <ul>
+          {error && <p>Error: {error}</p>}
+          {loading && <p>Loading...</p>}
           {data?.map((character: ICharacter) => (<li key={character.id}>
-          {character.name}
-        </li>))}
+            <div className='list'>
+              <h3>{character.name}</h3>
+              <img src={character.image} alt={character.name} />
+              <p>Gender: {character.gender}</p>
+              <p>Species: {character.species}</p>
+            </div>
+          </li>))}
         </ul>
       </div>
     </div>
