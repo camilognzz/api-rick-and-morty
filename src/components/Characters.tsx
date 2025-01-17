@@ -2,10 +2,10 @@ import { CharactersProps } from "./ICharacter"
 
 export const RenderCharacters = ({ characters }: CharactersProps) => {
     return (
-        <ul>
+        <ul className="characters">
             {
                 characters.map(character => (
-                    <li key={character.id}>
+                    <li className="character" key={character.id}>
                         <h3>{character.name}</h3>
                         <p>{character.gender}</p>
                         <img src={character.image} alt={character.name} />
@@ -18,7 +18,7 @@ export const RenderCharacters = ({ characters }: CharactersProps) => {
 
 export const NoCharactersResults = () => {
     return (
-        <p>No se encontraron resultados</p>
+        <p>No results found.</p>
     )
 }
 

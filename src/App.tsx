@@ -1,40 +1,52 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './App.css';
 import { Characters } from './components/Characters';
 import { useCharacters } from './hooks/useCharacters';
 //import { ICharacter, useFetch } from './services/useFetch';
 
-
-function App() {
-  /* const { data, loading, error } = useFetch('https://rickandmortyapi.com/api/character'); */
-  const { characters } = useCharacters();
-  const [query, setQuery] = useState<string>('');
+function useSearch() {
+  const [search, updateSearch] = useState<string>('');
   const [error, setError] = useState<null | string>(null);
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log({ query });
-  }
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value)
-  }
+  const isFirstInput = useRef<boolean>(true);
 
   useEffect(() => {
-    if(query === ''){
+    if(isFirstInput.current){
+      isFirstInput.current = search === '';
+      return
+    }
+
+    if (search === '') {
       setError('You cannot search for an empty character.');
       return
     }
-    if (query.match(/^\d+$/)) {
+    if (search.match(/^\d+$/)) {
       setError('You cannot search for a character with a number.');
       return
     }
-    if (query.length < 3) {
+    if (search.length < 3) {
       setError('The search must have at least 3 characters.');
       return
     }
     setError(null);
-  }, [query])
+  }, [search])
+
+  return { search, updateSearch, error };
+}
+
+function App() {
+  /* const { data, loading, error } = useFetch('https://rickandmortyapi.com/api/character'); */
+  const { characters } = useCharacters();
+  const  { search, updateSearch, error } = useSearch();
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log({ search });
+  }
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    updateSearch(event.target.value)
+  }
+
 
   return (
     <div className='page'>
@@ -42,7 +54,7 @@ function App() {
       <header>
         <h1>Characters Rick and Morty</h1>
         <form className='form' onSubmit={handleSubmit}>
-          <input onChange={handleChange} value={query} name='query' type="text" placeholder='Rick Sanchez, Morty Smith, Beth Smith' />
+          <input onChange={handleChange} value={search} name='query' type="text" placeholder='Rick Sanchez, Morty Smith, Beth Smith' />
           <button type='submit'>Search</button>
         </form>
         {error && <p style={{ color: 'red' }}>{error}</p>}
