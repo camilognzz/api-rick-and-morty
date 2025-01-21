@@ -35,12 +35,12 @@ function useSearch() {
 
 function App() {
   /* const { data, loading, error } = useFetch('https://rickandmortyapi.com/api/character'); */
-  const { characters } = useCharacters();
   const  { search, updateSearch, error } = useSearch();
+  const { characters, getCharacters } = useCharacters({search});
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log({ search });
+    getCharacters();
   }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -7,4 +7,8 @@ export interface ICharacter {
 
 export interface CharactersProps {
   characters: ICharacter[];
+
+}
+export interface CharactersResponse {
+  results: ICharacter[];
 }
