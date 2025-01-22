@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import './App.css';
 import { Characters } from './components/Characters';
 import { useCharacters } from './hooks/useCharacters';
-//import { ICharacter, useFetch } from './services/useFetch';
+import debounce from 'just-debounce-it';
 
 function useSearch() {
   const [search, updateSearch] = useState<string>('');
@@ -10,7 +10,7 @@ function useSearch() {
   const isFirstInput = useRef<boolean>(true);
 
   useEffect(() => {
-    if(isFirstInput.current){
+    if (isFirstInput.current) {
       isFirstInput.current = search === '';
       return
     }
@@ -34,17 +34,25 @@ function useSearch() {
 }
 
 function App() {
-  /* const { data, loading, error } = useFetch('https://rickandmortyapi.com/api/character'); */
-  const  { search, updateSearch, error } = useSearch();
-  const { characters, getCharacters } = useCharacters({search});
+  const { search, updateSearch, error } = useSearch();
+  const { characters, loading, getCharacters } = useCharacters({ search });
+
+  const debounceGetCharacters = useCallback(
+    debounce((search:string) => {
+    console.log('search', search);
+    getCharacters({search})
+  }, 300)
+  ,[getCharacters])
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    getCharacters();
+    getCharacters({ search });
   }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    updateSearch(event.target.value)
+    const newSearch = event.target.value;
+    updateSearch(newSearch);
+    debounceGetCharacters(newSearch);
   }
 
 
@@ -62,23 +70,11 @@ function App() {
 
       <main>
         {
-          <Characters characters={characters} />
+          loading ? <p>Loading...</p> : <Characters characters={characters} />
         }
       </main>
     </div >
   )
 }
-{/*   <ul>
-    {error && <p>Error: {error}</p>}
-    {loading && <p>Loading...</p>}
-    {data?.map((character: ICharacter) => (<li key={character.id}>
-      <div className='list'>
-        <h3>{character.name}</h3>
-        <img src={character.image} alt={character.name} />
-        <p>Gender: {character.gender}</p>
-        <p>Species: {character.species}</p>
-      </div>
-    </li>))}
-  </ul> */}
 
 export default App

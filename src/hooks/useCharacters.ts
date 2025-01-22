@@ -1,30 +1,34 @@
-import { useState } from 'react';
-import withoutResults from '../mocks/noResultsCharacters.json';
-import { CharactersResponse } from '../components/ICharacter';
+import { useMemo, useRef, useState } from "react";
+import { searchCharacters } from "../services/Characters";
+import { ICharacter } from "../components/ICharacter";
 
-export function useCharacters({search} :{ search: string }) {
-  const [responseCharacters, setResponseCharacters] = useState<CharactersResponse>({ results: [] });
-    const characters = responseCharacters.results;
+export function useCharacters({ search }: { search: string }) {
+  const [characters, setCharacters] = useState<ICharacter[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<null | string>(null);
+  const previousSearch = useRef(search);
 
-    const mappedCharacters = characters.map(character => ({
-      id: character.id,
-      name: character.name,
-      gender: character.gender,
-      image: character.image
-    }))
-
-    const getCharacters = () => {
-      if(search){
-        //setResponseCharacters(withResults);
-        fetch(`https://rickandmortyapi.com/api/character?name=${encodeURIComponent(search)}`)
-        .then(response => response.json())
-        .then(json => {
-          setResponseCharacters(json)
-        })
-      }else{
-        setResponseCharacters(withoutResults);
+  const getCharacters = useMemo(() => {
+    return async ({search}: {search:string}) => {
+      if (search === previousSearch.current) return;
+      try {
+        setLoading(true);
+        setError(null);
+        previousSearch.current = search;
+        const newCharacters = await searchCharacters({ search });
+        setCharacters(newCharacters);
+      } catch (e) {
+        if (e instanceof Error) {
+          setError(e.message);
+          console.error(error);
+        } else {
+          setError("An unknown error occurred");
+        }
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+  }, []);
 
-    return { characters: mappedCharacters, getCharacters }
-  }
+  return { characters, getCharacters, loading };
+}
