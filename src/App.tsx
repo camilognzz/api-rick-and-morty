@@ -38,11 +38,11 @@ function App() {
   const { characters, loading, getCharacters } = useCharacters({ search });
 
   const debounceGetCharacters = useCallback(
-    debounce((search:string) => {
-    console.log('search', search);
-    getCharacters({search})
-  }, 300)
-  ,[getCharacters])
+    debounce((search: string) => {
+      console.log('search', search);
+      getCharacters({ search })
+    }, 400)
+    , [getCharacters])
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -69,10 +69,14 @@ function App() {
       </header>
 
       <main>
+        <h1 className="text-center text-gray-900 bg-slate-500">
+          Hello world!
+        </h1>
         {
           loading ? <p>Loading...</p> : <Characters characters={characters} />
         }
       </main>
+      <footer>Powered by Camilognzz</footer>
     </div >
   )
 }

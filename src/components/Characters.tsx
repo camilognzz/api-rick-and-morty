@@ -18,7 +18,7 @@ export const RenderCharacters = ({ characters }: CharactersProps) => {
 
 export const NoCharactersResults = () => {
     return (
-        <p>No results found.</p>
+        <p>No results found for this character.</p>
     )
 }
 
