@@ -1,34 +1,34 @@
-import { useMemo, useRef, useState } from "react";
-import { searchCharacters } from "../services/Characters";
-import { ICharacter } from "../components/ICharacter";
+import { useState, useEffect, useCallback } from 'react';
+import { searchCharacters } from '../services/Characters';
+import { ICharacter } from '../components/ICharacter';
 
-export function useCharacters({ search }: { search: string }) {
-  const [characters, setCharacters] = useState<ICharacter[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<null | string>(null);
-  const previousSearch = useRef(search);
+export const useCharacters = ({ search }: { search: string }) => {
+    const [characters, setCharacters] = useState<ICharacter[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<null | string>(null);
 
-  const getCharacters = useMemo(() => {
-    return async ({search}: {search:string}) => {
-      if (search === previousSearch.current) return;
-      try {
-        setLoading(true);
-        setError(null);
-        previousSearch.current = search;
-        const newCharacters = await searchCharacters({ search });
-        setCharacters(newCharacters);
-      } catch (e) {
-        if (e instanceof Error) {
-          setError(e.message);
-          console.error(error);
-        } else {
-          setError("An unknown error occurred");
+    const getCharacters = useCallback(async ({ search }: { search: string }) => {
+        try {
+            setLoading(true);
+            setError(null);
+            const results = await searchCharacters({ search });
+            setCharacters(results);
+        } catch {
+            setError('Error fetching characters.');
+        } finally {
+            setLoading(false);
         }
-      } finally {
-        setLoading(false);
-      }
-    };
-  }, []);
+    }, []);
 
-  return { characters, getCharacters, loading };
-}
+    useEffect(() => {
+        getCharacters({ search: '' }); 
+    }, [getCharacters]);
+
+    useEffect(() => {
+        if (search) {
+            getCharacters({ search });
+        }
+    }, [search, getCharacters]);
+
+    return { characters, loading, error, getCharacters };
+};

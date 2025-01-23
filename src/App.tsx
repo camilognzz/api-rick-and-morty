@@ -59,7 +59,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <header className="bg-gray-800 p-6 text-center">
-        <h1 className="text-3xl font-bold mb-4">Rick and Morty Characters</h1>
+        <h1 className="text-4xl font-bold mb-4">Rick and Morty Characters</h1>
         <form className="flex flex-col sm:flex-row justify-center items-center gap-4" onSubmit={handleSubmit}>
           <input
             onChange={handleChange}
