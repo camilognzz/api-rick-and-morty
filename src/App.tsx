@@ -57,27 +57,51 @@ function App() {
 
 
   return (
-    <div className='page'>
-
-      <header>
-        <h1>Characters Rick and Morty</h1>
-        <form className='form' onSubmit={handleSubmit}>
-          <input onChange={handleChange} value={search} name='query' type="text" placeholder='Rick Sanchez, Morty Smith, Beth Smith' />
-          <button type='submit'>Search</button>
+    <div className="min-h-screen bg-gray-900 text-white">
+      <header className="bg-gray-800 p-6 text-center">
+        <h1 className="text-3xl font-bold mb-4">Rick and Morty Characters</h1>
+        <form className="flex flex-col sm:flex-row justify-center items-center gap-4" onSubmit={handleSubmit}>
+          <input
+            onChange={handleChange}
+            value={search}
+            name="query"
+            type="text"
+            placeholder="Rick Sanchez, Morty Smith, Beth Smith"
+            className="w-full sm:w-1/3 p-3 rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+          <button
+            type="submit"
+            className="bg-green-500 hover:bg-green-600 text-white py-2 px-6 rounded-md transition duration-200"
+          >
+            Search
+          </button>
         </form>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {error && <p className="text-red-500 mt-4">{error}</p>}
       </header>
 
-      <main>
-        <h1 className="text-center text-gray-900 bg-slate-500">
-          Hello world!
-        </h1>
-        {
-          loading ? <p>Loading...</p> : <Characters characters={characters} />
-        }
+      <main className="p-6">
+        {loading ? (
+          <p className="text-center text-gray-400">Loading...</p>
+        ) : (
+          <Characters characters={characters} />
+        )}
       </main>
-      <footer>Powered by Camilognzz</footer>
-    </div >
+
+      <footer className="text-center py-4">
+        <p className="text-sm text-gray-400">
+          Powered by{' '}
+          <a
+            href="https://www.linkedin.com/in/camilognzz1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-green-400 hover:underline"
+          >
+            Camilognzz
+          </a>
+        </p>
+      </footer>
+    </div>
+
   )
 }
 

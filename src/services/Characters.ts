@@ -10,6 +10,7 @@ export const searchCharacters = async ({search} :{ search: string }) => {
             id: character.id,
             name: character.name,
             gender: character.gender,
+            species: character.species,
             image: character.image
           }))
     }catch{
