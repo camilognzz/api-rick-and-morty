@@ -91,7 +91,7 @@ function App() {
         <p className="text-sm text-gray-400">
           Powered by{' '}
           <a
-            href="https://www.linkedin.com/in/camilognzz1"
+            href="https://camilogonzalez.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-green-400 hover:underline"
